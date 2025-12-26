@@ -23,8 +23,8 @@ pipeline {
                 script {
                     echo '--- Building Docker Image ---'
                     // Build image dengan tag 'latest' dan nomor build (versi)
-                    sh "docker build -t $REGISTRY_URL/$IMAGE_NAME:latestjens ."
-                    sh "docker build -t $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER} ."
+                    bat "docker build -t $REGISTRY_URL/$IMAGE_NAME:latestjens ."
+                    bat "docker build -t $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER} ."
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
                     echo '--- Logging in to Azure Container Registry ---'
                     // Mengambil username/password aman dari Jenkins Credentials
                     withCredentials([usernamePassword(credentialsId: DOCKER_CRED_ID, usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
-                        sh "docker login $REGISTRY_URL -u $ACR_USER -p $ACR_PASS"
+                        bat "docker login $REGISTRY_URL -u $ACR_USER -p $ACR_PASS"
                     }
                 }
             }
@@ -46,8 +46,8 @@ pipeline {
                 script {
                     echo '--- Pushing Image to ACR ---'
                     // Push ke Azure
-                    sh "docker push $REGISTRY_URL/$IMAGE_NAME:latestjens"
-                    sh "docker push $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER}"
+                    bat "docker push $REGISTRY_URL/$IMAGE_NAME:latestjens"
+                    bat "docker push $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER}"
                 }
             }
         }
@@ -56,9 +56,9 @@ pipeline {
     post {
         always {
             // Bersihkan sampah image di server Jenkins agar storage tidak penuh
-            sh "docker logout $REGISTRY_URL"
-            sh "docker rmi $REGISTRY_URL/$IMAGE_NAME:latestjens || true"
-            sh "docker rmi $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER} || true"
+            bat "docker logout $REGISTRY_URL"
+            bat "docker rmi $REGISTRY_URL/$IMAGE_NAME:latestjens || true"
+            bat "docker rmi $REGISTRY_URL/$IMAGE_NAME:${BUILD_NUMBER} || true"
         }
     }
 }
