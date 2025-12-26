@@ -20,7 +20,10 @@ php artisan migrate --force
 # CATATAN: db:seed TIDAK dimasukkan di sini agar data tidak ganda.
 # Jika database kosong melompong dan Anda INGIN otomatis seed,
 # hapus tanda pagar (#) di baris bawah ini (tapi hati-hati duplikat):
-php artisan db:seed --force
+php artisan db:seed --class=GenreSeeder
+php artisan db:seed --class=FilmSeeder
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=SubscriptionPlanSeeder
 
 # 5. Jalankan SSH (Agar tidak Conn Close)
 service ssh start
