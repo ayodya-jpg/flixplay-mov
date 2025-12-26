@@ -31,7 +31,7 @@
         @error('duration') <span style="color: #e94b3c;">{{ $message }}</span> @enderror
     </div>
     <div class="form-group">
-        <label>Tahun Rilis</label>
+        <label>Tahun Keluar</label>
         <input type="number" name="release_year" value="{{ old('release_year') }}" required>
         @error('release_year') <span style="color: #e94b3c;">{{ $message }}</span> @enderror
     </div>
