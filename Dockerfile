@@ -83,6 +83,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip mbstring \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# ### TAMBAHAN BARU 1: Install Composer ###
+# Mengambil program Composer dari image resminya
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # 2. Konfigurasi SSH (Password harus 'Docker!' agar dikenali Azure)
 RUN echo "root:Docker!" | chpasswd
 COPY sshd_config /etc/ssh/sshd_config
@@ -94,6 +98,10 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 
 WORKDIR /var/www/html
 COPY . .
+
+# ### TAMBAHAN BARU 2: Jalankan Composer Install ###
+# Ini akan mendownload folder 'vendor' yang hilang
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # 4. Permissions
 RUN chown -R www-data:www-data /var/www/html \
