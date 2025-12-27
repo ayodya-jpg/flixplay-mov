@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\AdminFilmController;
 use App\Http\Controllers\Admin\AdminGenreController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\WatchlistController;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\GoogleController;
+
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -30,6 +33,12 @@ Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+// === TAMBAHKAN DISINI (Google Auth) ===
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+// ======================================
 
 // Protected Routes - PERLU LOGIN
 Route::middleware('auth')->group(function () {

@@ -23,9 +23,9 @@ class Film extends Model
         'rating',
         'is_featured',
         'status',
-        'is_trending',  
-        'is_popular',  
-        'is_hero',   
+        'is_trending',
+        'is_popular',
+        'is_hero',
     ];
 
     protected $casts = [
@@ -40,6 +40,14 @@ class Film extends Model
         return $this->belongsTo(Genre::class);
     }
     public function watchHistory()
+    {
+        return $this->hasMany(WatchHistory::class);
+    }
+
+    protected $guarded = ['id'];
+
+    // === Untuk Watch History ===
+    public function watchHistories()
     {
         return $this->hasMany(WatchHistory::class);
     }
