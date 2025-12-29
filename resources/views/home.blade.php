@@ -202,9 +202,6 @@
                                 <i class="bi bi-plus"></i>
                             </a>
                         @endauth
-
-                        {{-- Thumbs Up --}}
-                        <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                     </div>
                 </div>
             </div>
@@ -283,9 +280,6 @@
                                 <i class="bi bi-plus"></i>
                             </a>
                         @endauth
-
-                        {{-- Thumbs Up --}}
-                        <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                     </div>
                 </div>
             </div>

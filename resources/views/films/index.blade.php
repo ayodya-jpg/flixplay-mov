@@ -57,9 +57,7 @@
                                 <i class="bi bi-plus"></i>
                             </a>
                         @endauth
-
                         {{-- Thumbs Up (Difference from File 2 kept here) --}}
-                        <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                     </div>
                 </div>
             </div>
