@@ -1,298 +1,233 @@
-@extends('layouts.app')
+@extends('admin.layout')
 
-@section('title', 'Home')
+@section('page-title', 'Dashboard Admin')
 
 @section('content')
 
-<section style="position: relative; height: 70vh; min-height: 500px; overflow: hidden; margin-top: 70px;">
-    @if($heroFilms->count() > 0)
-        <div id="heroSlider" style="display: flex; transition: transform 1s ease-in-out; height: 100%; width: 100%;">
-            @foreach($heroFilms as $index => $film)
-                <div style="min-width: 100%; height: 100%; position: relative; flex-shrink: 0;">
-                    <img src="{{ asset($film->backdrop_url) }}"
-                         alt="{{ $film->title }}"
-                         style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
-
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to right, rgba(10, 14, 39, 0.9) 30%, transparent 70%);"></div>
-
-                    <div style="position: absolute; bottom: 80px; left: 50px; max-width: 600px; color: white; z-index: 10;">
-                        <div style="background: rgba(233, 75, 60, 0.9); padding: 5px 15px; border-radius: 15px; display: inline-block; margin-bottom: 15px; font-size: 12px; font-weight: bold;">
-                            {{ $film->genre->name }}
-                        </div>
-                        <h1 style="font-size: 48px; margin-bottom: 15px; text-shadow: 2px 2px 8px rgba(0,0,0,0.8);">
-                            {{ $film->title }}
-                        </h1>
-                        <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 16px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">
-                            <span>⭐ {{ number_format($film->rating, 1) }}/10</span>
-                            <span>{{ $film->release_year }}</span>
-                            <span>{{ $film->duration }} min</span>
-                        </div>
-                        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">
-                            {{ Str::limit($film->description, 150) }}
-                        </p>
-                        <a href="{{ route('films.show', $film) }}"
-                           style="padding: 15px 35px; background: linear-gradient(135deg, #e94b3c, #d63a2a); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s;"
-                           onmouseover="this.style.transform='translateY(-3px)';"
-                           onmouseout="this.style.transform='translateY(0)';">
-                            <i class="bi bi-play-fill" style="font-size: 20px;"></i> Tonton Sekarang
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-        <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 20;">
-            @foreach($heroFilms as $index => $film)
-                <div class="slide-indicator"
-                     data-slide="{{ $index }}"
-                     style="width: 40px; height: 4px; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; border-radius: 2px;">
-                </div>
-            @endforeach
-        </div>
-
-        <button id="prevSlide" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); border: none; color: white; font-size: 30px; padding: 15px 20px; cursor: pointer; border-radius: 50%; z-index: 20; transition: all 0.3s; backdrop-filter: blur(10px);">
-            <i class="bi bi-chevron-left"></i>
-        </button>
-        <button id="nextSlide" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); border: none; color: white; font-size: 30px; padding: 15px 20px; cursor: pointer; border-radius: 50%; z-index: 20; transition: all 0.3s; backdrop-filter: blur(10px);">
-            <i class="bi bi-chevron-right"></i>
-        </button>
-    @else
-        <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0a0e27, #1a1a3e); color: white; text-align: center; padding: 40px;">
+{{-- ================= 1. KARTU STATISTIK ================= --}}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+    {{-- Card: Total Users --}}
+    <div style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.1), rgba(0, 212, 212, 0.1)); border: 1px solid rgba(0, 212, 212, 0.2); padding: 25px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
             <div>
-                <h1 style="font-size: 48px; margin-bottom: 20px;">Selamat Datang di FlixPlay</h1>
-                <p style="font-size: 20px; color: #b0b0b0; margin-bottom: 30px;">Platform streaming film terbaik untuk Anda</p>
-                <a href="{{ route('films.index') }}"
-                   style="padding: 15px 40px; background: linear-gradient(135deg, #e94b3c, #d63a2a); color: white; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
-                    Jelajahi Film
-                </a>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Total Users</p>
+                <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 32px;">{{ $totalUsers }}</h2>
             </div>
+            <i class="bi bi-people-fill" style="font-size: 24px; color: #00d4d4;"></i>
         </div>
-    @endif
-</section>
+    </div>
 
+    {{-- Card: Total Films --}}
+    <div style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.1), rgba(0, 212, 212, 0.1)); border: 1px solid rgba(0, 212, 212, 0.2); padding: 25px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Total Film</p>
+                <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 32px;">{{ $totalFilms }}</h2>
+            </div>
+            <i class="bi bi-film" style="font-size: 24px; color: #e94b3c;"></i>
+        </div>
+    </div>
+
+    {{-- Card: Active Subscriptions --}}
+    <div style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.1), rgba(0, 212, 212, 0.1)); border: 1px solid rgba(0, 212, 212, 0.2); padding: 25px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Active Subscriptions</p>
+                <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 32px;">{{ $activeSubscriptions }}</h2>
+            </div>
+            <i class="bi bi-credit-card" style="font-size: 24px; color: #00d4d4;"></i>
+        </div>
+    </div>
+
+    {{-- Card: Total Watches --}}
+    <div style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.1), rgba(0, 212, 212, 0.1)); border: 1px solid rgba(0, 212, 212, 0.2); padding: 25px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Total Watches</p>
+                <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 32px;">{{ $totalWatches }}</h2>
+            </div>
+            <i class="bi bi-eye" style="font-size: 24px; color: #e94b3c;"></i>
+        </div>
+    </div>
+</div>
+
+{{-- ================= 2. AREA GRAFIK ================= --}}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 40px;">
+
+    {{-- Grafik Pendaftar --}}
+    <div style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.05), rgba(0, 212, 212, 0.05)); border: 1px solid rgba(233, 75, 60, 0.2); padding: 25px; border-radius: 8px;">
+        <h3 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px; margin-top: 0;">
+            📈 Pendaftar Baru (All Time)
+        </h3>
+        <div style="position: relative; height: 300px; width: 100%;">
+            <canvas id="userChart"></canvas>
+        </div>
+    </div>
+
+    {{-- Grafik Trafik (Baru) --}}
+    <div style="background: linear-gradient(135deg, rgba(0, 212, 212, 0.05), rgba(233, 75, 60, 0.05)); border: 1px solid rgba(0, 212, 212, 0.2); padding: 25px; border-radius: 8px;">
+        <h3 style="background: linear-gradient(135deg, #00d4d4, #e94b3c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px; margin-top: 0;">
+            🌏 Trafik Pengunjung (Page Views)
+        </h3>
+        <div style="position: relative; height: 300px; width: 100%;">
+            <canvas id="trafficChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+{{-- ================= 3. TOP 5 FILM ================= --}}
+<div style="margin-bottom: 40px;">
+    <h3 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;">
+        🔥 Top 5 Film Paling Sering Ditonton
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        @foreach($popularFilms as $film)
+            <div style="background: rgba(31, 41, 55, 0.6); padding: 15px; border-radius: 8px; border-left: 4px solid #e94b3c; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="overflow: hidden;">
+                    <h5 style="margin: 0; color: #e5e5e5; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ $film->title }}
+                    </h5>
+
+                    <small style="color: #9ca3af;">
+                        {{ $film->genre->name ?? 'General' }}
+                    </small>
+                </div>
+
+                <div style="text-align: right; min-width: 60px;">
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #00d4d4;">
+                        {{ $film->watch_histories_count }}
+                    </span>
+                    <br>
+                    <small style="font-size: 0.7rem; color: #b0b0b0;">Views</small>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- ================= 4. TABEL SUBSCRIPTION ================= --}}
+<div>
+    <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;">📊 Recent Subscriptions</h2>
+    <div style="overflow-x: auto;">
+        <table class="table" style="width: 100%; border-collapse: collapse; color: #e5e5e5;">
+            <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <th style="padding: 12px; text-align: left;">User</th>
+                    <th style="padding: 12px; text-align: left;">Plan</th>
+                    <th style="padding: 12px; text-align: left;">Amount</th>
+                    <th style="padding: 12px; text-align: left;">Started</th>
+                    <th style="padding: 12px; text-align: left;">Expires</th>
+                    <th style="padding: 12px; text-align: left;">Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach($recentSubscriptions as $sub)
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 12px;">{{ $sub->user->name }}</td>
+                        <td style="padding: 12px;">{{ $sub->plan->name }}</td>
+                        <td style="padding: 12px;">Rp {{ number_format($sub->amount, 0, ',', '.') }}</td>
+                        <td style="padding: 12px;">{{ $sub->started_at?->format('d M Y') }}</td>
+                        <td style="padding: 12px;">{{ $sub->expires_at?->format('d M Y') }}</td>
+                        <td style="padding: 12px;">
+                            <span style="background: linear-gradient(135deg, rgba(0, 212, 212, 0.2), rgba(0, 212, 212, 0.1)); color: #00d4d4; padding: 5px 10px; border-radius: 4px; font-size: 12px;">
+                                {{ ucfirst($sub->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{-- ================= 5. SCRIPT CHART.JS ================= --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let currentSlide = 0;
-        const totalSlides = {{ $heroFilms->count() }};
-        const slider = document.getElementById('heroSlider');
-        const indicators = document.querySelectorAll('.slide-indicator');
-        const prevBtn = document.getElementById('prevSlide');
-        const nextBtn = document.getElementById('nextSlide');
-        let autoSlideInterval;
+    document.addEventListener("DOMContentLoaded", function() {
 
-        if (totalSlides > 0 && slider) {
-            function updateSlider() {
-                // Gunakan backticks (`) untuk template literal JS
-                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        // --- CHART 1: USER REGISTRATIONS (LINE) ---
+        const ctxUser = document.getElementById('userChart').getContext('2d');
+        const userLabels = {!! json_encode($dates) !!};
+        const userData = {!! json_encode($counts) !!};
 
-                indicators.forEach((indicator, index) => {
-                    if (index === currentSlide) {
-                        indicator.style.background = '#e94b3c';
-                        indicator.style.width = '60px';
-                    } else {
-                        indicator.style.background = 'rgba(255,255,255,0.5)';
-                        indicator.style.width = '40px';
+        new Chart(ctxUser, {
+            type: 'line',
+            data: {
+                labels: userLabels,
+                datasets: [{
+                    label: 'User Baru',
+                    data: userData,
+                    borderColor: '#00d4d4', // Warna Cyan
+                    backgroundColor: 'rgba(0, 212, 212, 0.15)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#e94b3c', // Warna Merah
+                    pointBorderColor: '#fff',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#e5e5e5' } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#9ca3af' },
+                        grid: { display: false }
                     }
-                });
-            }
-
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlider();
-            }
-
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateSlider();
-            }
-
-            function startAutoSlide() {
-                autoSlideInterval = setInterval(nextSlide, 5000); // 5 detik
-            }
-
-            function stopAutoSlide() {
-                clearInterval(autoSlideInterval);
-            }
-
-            // Start Logic
-            startAutoSlide();
-            updateSlider();
-
-            // Event Listeners
-            slider.addEventListener('mouseenter', stopAutoSlide);
-            slider.addEventListener('mouseleave', startAutoSlide);
-
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
-                    currentSlide = index;
-                    updateSlider();
-                    stopAutoSlide();
-                    startAutoSlide();
-                });
-            });
-
-            if(nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    nextSlide();
-                    stopAutoSlide();
-                    startAutoSlide();
-                });
-            }
-
-            if(prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    prevSlide();
-                    stopAutoSlide();
-                    startAutoSlide();
-                });
-            }
-
-            [prevBtn, nextBtn].forEach(btn => {
-                if(btn) {
-                    btn.addEventListener('mouseenter', () => {
-                        btn.style.background = 'rgba(233, 75, 60, 0.9)';
-                        btn.style.transform = 'translateY(-50%) scale(1.1)';
-                    });
-                    btn.addEventListener('mouseleave', () => {
-                        btn.style.background = 'rgba(0,0,0,0.6)';
-                        btn.style.transform = 'translateY(-50%) scale(1)';
-                    });
                 }
-            });
-        }
+            }
+        });
+
+        // --- CHART 2: VISITOR TRAFFIC (BAR) ---
+        const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
+        // Menggunakan operator null coalescing (??) untuk mencegah error jika data kosong
+        const trafficLabels = {!! json_encode($trafficDates ?? []) !!};
+        const trafficData = {!! json_encode($trafficCounts ?? []) !!};
+
+        new Chart(ctxTraffic, {
+            type: 'bar',
+            data: {
+                labels: trafficLabels,
+                datasets: [{
+                    label: 'Page Views',
+                    data: trafficData,
+                    backgroundColor: 'rgba(233, 75, 60, 0.7)', // Warna Merah Transparan
+                    borderColor: '#e94b3c',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#00d4d4' // Hover jadi Cyan
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#e5e5e5' } },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#9ca3af' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
     });
 </script>
-
-<section class="category-section" id="trending">
-    <h2 class="category-title">🔥 TRENDING SEKARANG</h2>
-    <div class="movie-container">
-        @forelse($trendingFilms as $film)
-            <div class="movie-card">
-                <img src="{{ asset($film->poster_url) }}" alt="{{ $film->title }}">
-                <div class="movie-overlay">
-                    <div class="movie-title">{{ $film->title }}</div>
-                    <div class="movie-rating">⭐ {{ number_format($film->rating, 1) }}/10</div>
-
-                    <div class="movie-actions">
-                        {{-- Play Button --}}
-                        <a href="{{ route('films.show', $film) }}" class="icon-btn" style="text-decoration: none;">
-                            <i class="bi bi-play-fill"></i>
-                        </a>
-
-                        {{-- Watchlist Logic --}}
-                        @auth
-                            @if(auth()->user()->hasInWatchlist($film->id))
-                                <form action="{{ route('watchlist.destroy', $film) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="icon-btn" style="background: linear-gradient(135deg, #4CAF50, #45a049);" title="Hapus dari Watchlist">
-                                        <i class="bi bi-check"></i>
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('watchlist.store', $film) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="icon-btn" title="Tambah ke Watchlist">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="icon-btn" title="Login untuk menambah ke Watchlist">
-                                <i class="bi bi-plus"></i>
-                            </a>
-                        @endauth
-
-                        {{-- Thumbs Up --}}
-                        <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p style="color: #b0b0b0;">Belum ada film trending</p>
-        @endforelse
-    </div>
-</section>
-
-<section class="featured-section" id="featured">
-    <h2 class="featured-title">✨ PILIHAN EDITOR</h2>
-
-    @if($featuredFilms->count() > 0)
-        @php $featured = $featuredFilms->first(); @endphp
-
-        <p class="featured-desc">{{ $featured->description }}</p>
-        <img src="{{ asset($featured->poster_url) }}"
-             alt="{{ $featured->title }}"
-             class="featured-img">
-
-        <div style="text-align: center; margin-top: 25px;">
-            <a href="{{ route('films.show', $featured) }}"
-               style="padding: 15px 40px; background: linear-gradient(135deg, #e94b3c, #d63a2a); color: white; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s;"
-               onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(233,75,60,0.5)';"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                <i class="bi bi-play-fill" style="font-size: 20px;"></i> Tonton Sekarang
-            </a>
-        </div>
-    @else
-        <p class="featured-desc">Belum ada film yang ditandai sebagai pilihan editor. Admin dapat menandai film di admin panel.</p>
-        <div style="text-align: center; padding: 40px 20px;">
-            <a href="{{ route('films.index') }}"
-               style="padding: 15px 30px; background: linear-gradient(135deg, #e94b3c, #d63a2a); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
-                Jelajahi Semua Film
-            </a>
-        </div>
-    @endif
-</section>
-
-<section class="category-section" id="movies">
-    <h2 class="category-title">⭐ POPULER DI FLIXPLAY</h2>
-    <div class="movie-container">
-        @forelse($popularFilms as $film)
-            <div class="movie-card">
-                <img src="{{ asset($film->poster_url) }}" alt="{{ $film->title }}">
-                <div class="movie-overlay">
-                    <div class="movie-title">{{ $film->title }}</div>
-                    <div class="movie-rating">⭐ {{ number_format($film->rating, 1) }}/10</div>
-
-                    <div class="movie-actions">
-                        {{-- Play Button --}}
-                        <a href="{{ route('films.show', $film) }}" class="icon-btn" style="text-decoration: none;">
-                            <i class="bi bi-play-fill"></i>
-                        </a>
-
-                        {{-- Watchlist Logic --}}
-                        @auth
-                            @if(auth()->user()->hasInWatchlist($film->id))
-                                <form action="{{ route('watchlist.destroy', $film) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="icon-btn" style="background: linear-gradient(135deg, #4CAF50, #45a049);" title="Hapus dari Watchlist">
-                                        <i class="bi bi-check"></i>
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('watchlist.store', $film) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="icon-btn" title="Tambah ke Watchlist">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="icon-btn" title="Login untuk menambah ke Watchlist">
-                                <i class="bi bi-plus"></i>
-                            </a>
-                        @endauth
-
-                        {{-- Thumbs Up --}}
-                        <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p style="color: #b0b0b0;">Belum ada film populer</p>
-        @endforelse
-    </div>
-</section>
-
 @endsection
