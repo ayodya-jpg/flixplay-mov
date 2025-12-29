@@ -5,6 +5,7 @@
 @section('content')
 <div style="max-width: 1200px; margin: 100px auto; padding: 40px;">
 
+    {{-- Header & Clear Button --}}
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <h1 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0;">📺 Riwayat Ditonton</h1>
 
@@ -16,20 +17,21 @@
         </form>
     </div>
 
+    {{-- Flash Message --}}
     @if (session('success'))
         <div style="background: rgba(0, 212, 212, 0.2); border-left: 4px solid #00d4d4; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #00d4d4;">
             {{ session('success') }}
         </div>
     @endif
 
+    {{-- Content --}}
     @if ($watchHistory->count() > 0)
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px;">
             @foreach($watchHistory as $history)
                 <div style="background: linear-gradient(135deg, #1a1a3e, #0f1a2e); border-radius: 12px; overflow: hidden; position: relative; height: 300px; border: 1px solid rgba(233, 75, 60, 0.2); transition: all 0.3s;">
 
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($history->film->poster_url) }}"
-                         alt="{{ $history->film->title }}"
-                         style="width: 100%; height: 100%; object-fit: cover;">
+                    {{-- Menggunakan asset() agar konsisten dengan file show.blade.php --}}
+                    <img src="{{ asset($history->film->poster_url) }}" alt="{{ $history->film->title }}" style="width: 100%; height: 100%; object-fit: cover;">
 
                     <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(10, 14, 39, 0.95), transparent); padding: 15px; transform: translateY(100%); transition: transform 0.3s;" class="movie-overlay">
                         <div style="background: linear-gradient(90deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 14px; font-weight: bold; margin-bottom: 8px;">

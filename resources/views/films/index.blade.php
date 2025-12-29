@@ -4,6 +4,7 @@
 <section class="category-section" style="margin-top: 90px;">
     <h2 class="category-title">📽️ SEMUA FILM</h2>
 
+    {{-- Flash Messages --}}
     @if(session('success'))
         <div style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50; max-width: 600px;">
             <i class="bi bi-check-circle"></i> {{ session('success') }}
@@ -26,14 +27,16 @@
                     <div style="font-size: 11px; color: #b0b0b0; margin-bottom: 10px;">
                         {{ $film->genre->name }} • {{ $film->release_year }}
                     </div>
+
                     <div class="movie-actions">
+                        {{-- Play Button --}}
                         <a href="{{ route('films.show', $film) }}" class="icon-btn" style="text-decoration: none;">
                             <i class="bi bi-play-fill"></i>
                         </a>
 
+                        {{-- Watchlist Logic --}}
                         @auth
                             @if(auth()->user()->hasInWatchlist($film->id))
-                                <!-- Jika sudah ada di watchlist -->
                                 <form action="{{ route('watchlist.destroy', $film) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
@@ -42,7 +45,6 @@
                                     </button>
                                 </form>
                             @else
-                                <!-- Jika belum ada di watchlist -->
                                 <form action="{{ route('watchlist.store', $film) }}" method="POST" style="display: inline;">
                                     @csrf
                                     <button type="submit" class="icon-btn" title="Tambah ke Watchlist">
@@ -56,6 +58,7 @@
                             </a>
                         @endauth
 
+                        {{-- Thumbs Up (Difference from File 2 kept here) --}}
                         <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                     </div>
                 </div>
@@ -69,7 +72,6 @@
         @endforelse
     </div>
 
-    <!-- Pagination -->
     @if($films->hasPages())
         <div style="display: flex; justify-content: center; margin-top: 40px;">
             {{ $films->links() }}
