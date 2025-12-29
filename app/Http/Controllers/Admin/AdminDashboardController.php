@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Film;
 use App\Models\Subscription;
 use App\Models\WatchHistory;
-use App\Models\SiteVisit; // ✅ Pastikan Model ini sudah dibuat
+use App\Models\SiteVisit; // ✅ Pastikan Model ini ada
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -20,9 +20,12 @@ class AdminDashboardController extends Controller
         // ==========================================
         $totalUsers = User::count();
         $totalFilms = Film::count();
+
+        // Menghitung user yang langganannya aktif (completed & belum expired)
         $activeSubscriptions = Subscription::where('status', 'completed')
             ->where('expires_at', '>', now())
             ->count();
+
         $totalWatches = WatchHistory::count();
 
         // ==========================================
@@ -38,7 +41,6 @@ class AdminDashboardController extends Controller
         // 3. GRAFIK USER BARU (SELAMANYA / ALL TIME)
         // ==========================================
         $usersData = User::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-            // ->where('created_at', '>=', now()->subDays(7)) // ❌ Dihapus agar data selamanya
             ->groupBy('date')
             ->orderBy('date', 'ASC')
             ->get();
@@ -52,7 +54,7 @@ class AdminDashboardController extends Controller
         // ==========================================
         // 4. GRAFIK TRAFIK PENGUNJUNG (SELAMANYA)
         // ==========================================
-        // Mengambil data dari tabel site_visits yang diisi oleh Middleware
+        // Mengambil data dari tabel site_visits yang diisi oleh Middleware TrackVisitor
         $trafficData = SiteVisit::orderBy('visit_date', 'asc')->get();
 
         $trafficDates = $trafficData->pluck('visit_date')->map(function ($date) {
@@ -79,8 +81,8 @@ class AdminDashboardController extends Controller
             'recentSubscriptions',
             'dates',         // Data Label Grafik User
             'counts',        // Data Angka Grafik User
-            'trafficDates',  // Data Label Grafik Trafik (BARU)
-            'trafficCounts', // Data Angka Grafik Trafik (BARU)
+            'trafficDates',  // Data Label Grafik Trafik
+            'trafficCounts', // Data Angka Grafik Trafik
             'popularFilms'
         ));
     }
