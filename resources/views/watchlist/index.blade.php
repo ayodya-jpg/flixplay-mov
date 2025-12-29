@@ -2,7 +2,6 @@
 @section('title', 'My Watchlist')
 @section('content')
 
-<!-- HEADER -->
 <section style="background: linear-gradient(135deg, rgba(233, 75, 60, 0.1), rgba(0, 0, 0, 0.9)); padding: 80px 20px 40px; margin-top: 70px;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <h1 style="font-size: 48px; margin-bottom: 15px; color: #fff;">
@@ -14,7 +13,6 @@
     </div>
 </section>
 
-<!-- NOTIFICATIONS -->
 <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
     @if(session('success'))
         <div style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
@@ -29,9 +27,9 @@
     @endif
 </div>
 
-<!-- WATCHLIST CONTENT -->
 <section style="padding: 40px 20px; max-width: 1200px; margin: 0 auto;">
     @if($watchlistFilms->count() > 0)
+        {{-- Header List & Clear Button --}}
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
             <p style="color: #b0b0b0; font-size: 16px;">
                 {{ $watchlistFilms->count() }} film dalam watchlist Anda
@@ -44,20 +42,26 @@
             </form>
         </div>
 
+        {{-- Movie Grid --}}
         <div class="movie-container">
             @foreach($watchlistFilms as $film)
                 <div class="movie-card">
                     <img src="{{ asset($film->poster_url) }}" alt="{{ $film->title }}">
+
                     <div class="movie-overlay">
                         <div class="movie-title">{{ $film->title }}</div>
                         <div class="movie-rating">⭐ {{ number_format($film->rating, 1) }}/10</div>
                         <div style="font-size: 11px; color: #b0b0b0; margin-bottom: 10px;">
                             {{ $film->genre->name }} • {{ $film->release_year }}
                         </div>
+
                         <div class="movie-actions">
+                            {{-- Play Button --}}
                             <a href="{{ route('films.show', $film) }}" class="icon-btn" style="text-decoration: none;">
                                 <i class="bi bi-play-fill"></i>
                             </a>
+
+                            {{-- Remove Button --}}
                             <form action="{{ route('watchlist.destroy', $film) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
@@ -65,6 +69,8 @@
                                     <i class="bi bi-x"></i>
                                 </button>
                             </form>
+
+                            {{-- Like Button (Static) --}}
                             <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                         </div>
                     </div>
@@ -72,6 +78,7 @@
             @endforeach
         </div>
     @else
+        {{-- Empty State --}}
         <div style="text-align: center; padding: 80px 20px; color: #b0b0b0;">
             <i class="bi bi-bookmark" style="font-size: 80px; display: block; margin-bottom: 20px; opacity: 0.3;"></i>
             <h2 style="font-size: 28px; margin-bottom: 15px; color: #fff;">Watchlist Kosong</h2>

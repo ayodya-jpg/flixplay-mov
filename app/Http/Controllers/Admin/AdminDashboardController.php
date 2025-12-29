@@ -1,20 +1,23 @@
 <?php
 
-    namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
-    use App\Http\Controllers\Controller;
-    use App\Models\User;
-    use App\Models\Film;
-    use App\Models\Subscription;
-    use App\Models\WatchHistory;
-    use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Film;
+use App\Models\Subscription;
+use App\Models\WatchHistory;
+use App\Models\SiteVisit; // ✅ Pastikan Model ini sudah dibuat
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
-    class AdminDashboardController extends Controller
+class AdminDashboardController extends Controller
+{
+    public function index()
     {
-
-        public function index()
-    {
-        // 1. Data Statistik Utama (Kartu Atas)
+        // ==========================================
+        // 1. STATISTIK KARTU ATAS
+        // ==========================================
         $totalUsers = User::count();
         $totalFilms = Film::count();
         $activeSubscriptions = Subscription::where('status', 'completed')
@@ -22,40 +25,63 @@
             ->count();
         $totalWatches = WatchHistory::count();
 
-        // 2. Data Tabel (Recent Subscription)
+        // ==========================================
+        // 2. TABEL RECENT SUBSCRIPTION
+        // ==========================================
         $recentSubscriptions = Subscription::with('user', 'plan')
             ->where('status', 'completed')
             ->latest('created_at')
             ->limit(10)
             ->get();
 
-        // 3. Data Grafik (INI BAGIAN PENTING YANG HILANG TADI)
+        // ==========================================
+        // 3. GRAFIK USER BARU (SELAMANYA / ALL TIME)
+        // ==========================================
         $usersData = User::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-            ->where('created_at', '>=', now()->subDays(7))
+            // ->where('created_at', '>=', now()->subDays(7)) // ❌ Dihapus agar data selamanya
             ->groupBy('date')
             ->orderBy('date', 'ASC')
             ->get();
 
-        $dates = $usersData->pluck('date');
+        // Format tanggal agar lebih rapi di grafik (misal: 12 Jan 2024)
+        $dates = $usersData->pluck('date')->map(function ($date) {
+            return Carbon::parse($date)->format('d M Y');
+        });
         $counts = $usersData->pluck('count');
 
-        // === 4. TAMBAHAN BARU: FILM TERPOPULER (TOP 5) ===
-        // withCount otomatis menghitung jumlah data di tabel watch_histories
+        // ==========================================
+        // 4. GRAFIK TRAFIK PENGUNJUNG (SELAMANYA)
+        // ==========================================
+        // Mengambil data dari tabel site_visits yang diisi oleh Middleware
+        $trafficData = SiteVisit::orderBy('visit_date', 'asc')->get();
+
+        $trafficDates = $trafficData->pluck('visit_date')->map(function ($date) {
+            return Carbon::parse($date)->format('d M Y');
+        });
+        $trafficCounts = $trafficData->pluck('count');
+
+        // ==========================================
+        // 5. FILM TERPOPULER (TOP 5)
+        // ==========================================
         $popularFilms = Film::withCount('watchHistories')
-            ->orderBy('watch_histories_count', 'desc') // Urutkan dari terbanyak
-            ->take(5) // Ambil 5 saja
+            ->orderBy('watch_histories_count', 'desc')
+            ->take(5)
             ->get();
 
-        // 4. Kirim Semua ke View
+        // ==========================================
+        // 6. KIRIM KE VIEW
+        // ==========================================
         return view('admin.dashboard', compact(
             'totalUsers',
             'totalFilms',
             'activeSubscriptions',
             'totalWatches',
             'recentSubscriptions',
-            'dates',   // <--- WAJIB ADA INI
-            'counts',  // <--- WAJIB ADA INI
-            'popularFilms'   // <--- WAJIB ADA INI
+            'dates',         // Data Label Grafik User
+            'counts',        // Data Angka Grafik User
+            'trafficDates',  // Data Label Grafik Trafik (BARU)
+            'trafficCounts', // Data Angka Grafik Trafik (BARU)
+            'popularFilms'
         ));
     }
 }
