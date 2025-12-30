@@ -37,7 +37,7 @@ php artisan migrate --force
 
 # CATATAN: db:seed TIDAK dimasukkan di sini agar data tidak ganda.
 # php artisan db:seed --class=GenreSeeder --force
-# php artisan db:seed --class=FilmSeeder --force
+php artisan db:seed --class=FilmSeeder 
 # php artisan db:seed --class=UserSeeder --force
 # php artisan db:seed --class=SubscriptionPlanSeeder --force
 
