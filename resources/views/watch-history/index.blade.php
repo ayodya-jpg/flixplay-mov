@@ -28,11 +28,10 @@
     @if ($watchHistory->count() > 0)
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px;">
             @foreach($watchHistory as $history)
-                {{-- Penambahan pengecekan agar tidak error jika film sudah dihapus --}}
+                {{-- 🔥 PENGECEKAN UTAMA: Hanya tampilkan jika filmnya MASIH ADA --}}
                 @if($history->film)
                     <div style="background: linear-gradient(135deg, #1a1a3e, #0f1a2e); border-radius: 12px; overflow: hidden; position: relative; height: 300px; border: 1px solid rgba(233, 75, 60, 0.2); transition: all 0.3s;">
 
-                        {{-- Menggunakan asset() agar konsisten dengan file show.blade.php --}}
                         <img src="{{ asset($history->film->poster_url) }}" alt="{{ $history->film->title }}" style="width: 100%; height: 100%; object-fit: cover;">
 
                         <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(10, 14, 39, 0.95), transparent); padding: 15px; transform: translateY(100%); transition: transform 0.3s;" class="movie-overlay">
@@ -50,6 +49,7 @@
                         <a href="{{ route('films.show', $history->film) }}" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1;"></a>
                     </div>
                 @endif
+                {{-- 🔥 AKHIR PENGECEKAN --}}
             @endforeach
         </div>
 
