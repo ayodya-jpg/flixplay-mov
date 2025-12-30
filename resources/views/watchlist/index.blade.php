@@ -34,12 +34,12 @@
             <p style="color: #b0b0b0; font-size: 16px;">
                 {{ $watchlistFilms->count() }} film dalam watchlist Anda
             </p>
-            <form action="{{ route('watchlist.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus semua film dari watchlist?');">
+            {{-- <form action="{{ route('watchlist.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus semua film dari watchlist?');">
                 @csrf
                 <button type="submit" style="background: rgba(233, 75, 60, 0.2); color: #e94b3c; border: 1px solid #e94b3c; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s;">
                     <i class="bi bi-trash"></i> Kosongkan Watchlist
                 </button>
-            </form>
+            </form> --}}
         </div>
 
         {{-- Movie Grid --}}
@@ -71,7 +71,6 @@
                             </form>
 
                             {{-- Like Button (Static) --}}
-                            <button class="icon-btn"><i class="bi bi-hand-thumbs-up"></i></button>
                         </div>
                     </div>
                 </div>
