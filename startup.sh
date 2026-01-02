@@ -2,21 +2,21 @@
 
 # --- BAGIAN 1: PERSIAPAN FOLDER (Punya Anda + Tambahan Log & Bootstrap) ---
 # # 1. Pastikan folder storage ada (Solusi Gambar Hilang)
-# mkdir -p /var/www/html/storage/app/public
-# mkdir -p /var/www/html/storage/framework/cache
-# mkdir -p /var/www/html/storage/framework/sessions
-# mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/app/public
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
 
 # # ### TAMBAHAN BARU: Buat folder logs dan bootstrap cache agar tidak error permission ###
-# mkdir -p /var/www/html/storage/logs
-# mkdir -p /var/www/html/bootstrap/cache
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/bootstrap/cache
 
 
 # --- BAGIAN 2: PERMISSION (Punya Anda + Tambahan Bootstrap) ---
 # 2. Atur izin (Permissions)
 # Saya tambahkan 'bootstrap/cache' agar Laravel bisa menyimpan cache config
-# chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-# chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 
 # --- BAGIAN 3: PEMBERSIHAN CACHE (TAMBAHAN PENTING) ---
@@ -29,7 +29,7 @@
 
 # --- BAGIAN 4: SETUP APLIKASI (Punya Anda) ---
 # 3. Buat Symlink Storage
-# php artisan storage:link
+php artisan storage:link
 
 # 4. Jalankan Migrasi Database (AMAN)
 # --force diperlukan karena kita di environment 'production'
