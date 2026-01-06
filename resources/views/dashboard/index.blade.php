@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="max-width: 1200px; margin: 100px auto; padding: 40px;">
-    
+
     <h1 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px;">Welcome, {{ auth()->user()->name }}! 👋</h1>
     <p style="color: #b0b0b0; margin-bottom: 30px;">Kelola akun dan langganan Anda di sini</p>
 
@@ -15,7 +15,7 @@
     @endif
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-        
+
         <!-- Profile Card -->
         <div style="background: linear-gradient(135deg, #1a1a3e, #0f1a2e); padding: 25px; border-radius: 12px; border: 1px solid rgba(233, 75, 60, 0.2);">
             <h3 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px;">Profil Anda</h3>
@@ -29,7 +29,7 @@
             <h3 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px;">Status Langganan</h3>
             <p style="color: #b0b0b0; margin: 10px 0;">
                 @if(auth()->user()->isSubscribed())
-                    💎 {{ ucfirst(auth()->user()->subscription_type) }}
+                    💎 Premium {{ ucfirst(auth()->user()->subscription_type) }}
                 @else
                     🔓 Gratis
                 @endif
